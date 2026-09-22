@@ -18,7 +18,10 @@ ENV LIBRARY_PATH=/usr/local/cuda/lib64/stubs:/usr/local/cuda/targets/x86_64-linu
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
       build-essential ca-certificates ccache cmake git libcurl4-openssl-dev ninja-build \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && for d in /usr/local/cuda/lib64/stubs /usr/local/cuda/targets/x86_64-linux/lib/stubs; do \
+         if [ -f "$d/libcuda.so" ]; then ln -sf libcuda.so "$d/libcuda.so.1"; fi; \
+       done
 
 WORKDIR /src
 RUN git clone --filter=blob:none --branch "${LLAMA_REF}" --depth 1 "${LLAMA_REPO}" llama.cpp
