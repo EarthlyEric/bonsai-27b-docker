@@ -2,10 +2,10 @@ name: Build container image
 
 on:
   push:
-    branches: [main]
+    branches: [master, main]
     tags: ["v*"]
   pull_request:
-    branches: [main]
+    branches: [master, main]
   workflow_dispatch:
     inputs:
       llama_ref:
@@ -68,4 +68,3 @@ jobs:
           cache-to: type=gha,mode=max
           provenance: mode=max
           sbom: true
-
