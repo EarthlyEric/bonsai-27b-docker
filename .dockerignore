@@ -1,0 +1,7 @@
+.git
+.github
+models
+*.gguf
+README.md
+compose.yaml
+
