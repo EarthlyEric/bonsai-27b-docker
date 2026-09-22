@@ -16,7 +16,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     LD_LIBRARY_PATH=/opt/llama:/opt/llama/lib:/usr/local/cuda/lib64:/usr/local/cuda/targets/x86_64-linux/lib:${LD_LIBRARY_PATH}
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-      ca-certificates curl libcurl4 tar \
+      ca-certificates curl libcurl4 libgomp1 tar \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir -p /opt/llama \
     && asset="llama-${LLAMA_RELEASE}-bin-linux-cuda-${LLAMA_CUDA_VERSION}-x64.tar.gz" \
@@ -44,4 +44,3 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
   CMD curl --fail --silent http://127.0.0.1:8080/health >/dev/null || exit 1
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
-
