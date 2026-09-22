@@ -8,10 +8,14 @@ on:
     branches: [master, main]
   workflow_dispatch:
     inputs:
-      llama_ref:
-        description: PrismML llama.cpp branch, tag, or commit
+      llama_release:
+        description: PrismML llama.cpp release tag
         required: false
-        default: master
+        default: prism-b10709-9a9394a
+      llama_sha256:
+        description: SHA-256 for the matching Linux CUDA 12.8 tarball
+        required: false
+        default: 8aec67eb023b251712c7e6490f367b5671bf587eced1436a9b85f4a90c3b7d3d
 
 permissions:
   contents: read
@@ -62,8 +66,9 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            CUDA_ARCHITECTURES=89
-            LLAMA_REF=${{ inputs.llama_ref || 'master' }}
+            LLAMA_RELEASE=${{ inputs.llama_release || 'prism-b10709-9a9394a' }}
+            LLAMA_CUDA_VERSION=12.8
+            LLAMA_SHA256=${{ inputs.llama_sha256 || '8aec67eb023b251712c7e6490f367b5671bf587eced1436a9b85f4a90c3b7d3d' }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           provenance: mode=max
