@@ -11,6 +11,11 @@ ARG CUDA_ARCHITECTURES=89
 
 ENV DEBIAN_FRONTEND=noninteractive
 
+# The CUDA devel image ships the driver stub used for linking. The real
+# libcuda.so.1 is injected by the NVIDIA Container Toolkit at runtime.
+ENV LIBRARY_PATH=/usr/local/cuda/lib64/stubs:/usr/local/cuda/targets/x86_64-linux/lib/stubs:${LIBRARY_PATH:-} \
+    LD_LIBRARY_PATH=/usr/local/cuda/lib64/stubs:/usr/local/cuda/targets/x86_64-linux/lib/stubs:${LD_LIBRARY_PATH:-}
+
 RUN apt-get update && apt-get install -y --no-install-recommends \
       build-essential ca-certificates ccache cmake git libcurl4-openssl-dev ninja-build \
     && rm -rf /var/lib/apt/lists/*
@@ -54,4 +59,3 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=120s --retries=3 \
   CMD curl --fail --silent http://127.0.0.1:8080/health >/dev/null || exit 1
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
-
