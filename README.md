@@ -1,6 +1,6 @@
 # Bonsai 27B CUDA container
 
-CUDA-optimized `llama-server` image for PrismML Bonsai / Bonsai 2 on an RTX 4070 Ti SUPER. The model is not embedded in the image; mount a GGUF file at runtime.
+CUDA-optimized `llama-server` image for PrismML Bonsai / Bonsai 2 on an RTX 4070 Ti SUPER. The image downloads and verifies PrismML's pre-built CUDA 12.8 release; it does not compile llama.cpp during Actions. The model is not embedded in the image; mount a GGUF file at runtime.
 
 ## Published image
 
@@ -33,12 +33,13 @@ For maximum speed with shorter prompts, start with 64K context. A 262K context i
 docker build -t bonsai-27b:cuda .
 ```
 
-Pin the PrismML fork for reproducible production builds:
+The default binary is pinned to `prism-b10709-9a9394a` and verified with SHA-256. Override the release only when you also provide the matching checksum:
 
 ```bash
 docker build \
-  --build-arg LLAMA_REF=<commit-or-release-tag> \
-  --build-arg CUDA_ARCHITECTURES=89 \
+  --build-arg LLAMA_RELEASE=<release-tag> \
+  --build-arg LLAMA_CUDA_VERSION=12.8 \
+  --build-arg LLAMA_SHA256=<sha256> \
   -t bonsai-27b:cuda .
 ```
 
@@ -53,6 +54,5 @@ http://localhost:8080/v1/chat/completions
 ## Notes
 
 - Requires the NVIDIA driver and NVIDIA Container Toolkit on the host.
-- Bonsai 2 currently requires PrismML's llama.cpp fork; the Dockerfile uses it by default.
+- Bonsai 2 currently requires PrismML's llama.cpp fork; the Dockerfile uses its pre-built CUDA 12.8 binary by default.
 - The Actions runner only compiles the CUDA image. A GPU is required when running it, not while building it.
-
