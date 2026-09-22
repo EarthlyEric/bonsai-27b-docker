@@ -1,0 +1,19 @@
+services:
+  bonsai:
+    image: ghcr.io/${GITHUB_OWNER:-your-github-user}/bonsai-27b-docker:latest
+    build:
+      context: .
+      args:
+        CUDA_ARCHITECTURES: "89"
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./models:/models:ro
+    environment:
+      MODEL: /models/bonsai.gguf
+      CTX_SIZE: "131072"
+      CACHE_TYPE_K: q4_0
+      CACHE_TYPE_V: q4_0
+    gpus: all
+
